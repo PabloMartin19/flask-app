@@ -30,7 +30,7 @@ pipeline {
                 }
             }
         }
-        stage("Construccion") {
+        stage("Construcción") {
             agent any
             stages {
                 stage('CloneAnfitrion') {
@@ -59,21 +59,22 @@ pipeline {
                         sh "docker rmi $IMAGEN:latest"
                     }
                 }
-                stage ('Deploy') {
-                    steps {
-                        sshagent(credentials: ['SSH_USER']) {
-                            sh '''
-                            ssh -o StrictHostKeyChecking=no pablo@dh.pablomartin.site " 
-                            # Verificar si el directorio existe, si no, clonarlo
-                            if [ ! -d 'flask-app' ]; then
-                                git clone https://github.com/PabloMartin19/flask-app.git
-                            fi
-                            cd flask-app
-                            git pull
-                            export NOMBRE='Pablo'
-                            docker-compose up -d --build
-                            "
-                            '''
+                stage ('Despliegue') {
+                    agent any
+                    stages {
+                        stage ('Despliegue en el VPS'){
+                            steps {
+                                sshagent(credentials : ['SSH_USER']) {
+                                    sh '''ssh -o StrictHostKeyChecking=no pablo@dh.pablomartin.site "
+                                    cd flask-app &&
+                                    git pull &&
+                                    docker-compose down &&
+                                    docker pull pablomartin19/flask-app:latest &&
+                                    docker-compose up -d &&
+                                    docker image prune -f
+                                    "'''
+                                }
+                            }
                         }
                     }
                 }
