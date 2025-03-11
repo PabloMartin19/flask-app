@@ -7,7 +7,7 @@ services:
     ports:
       - "5002:5002"  # Mapea el puerto del contenedor al host
     environment:
-      - NOMBRE=MiAplicacion  # Define una variable de entorno
+      - NOMBRE=Pablo  # Define una variable de entorno
     volumes:
       - contador_data:/usr/share/app/  # Mantiene el archivo contador.txt persistente
     restart: unless-stopped  # Reinicia el contenedor si falla
