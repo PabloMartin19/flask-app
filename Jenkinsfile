@@ -63,15 +63,16 @@ pipeline {
                     steps {
                         sshagent(credentials: ['SSH_USER']) {
                             sh '''
-                            ssh -o StrictHostKeyChecking=no pablo@dh.pablomartin.site <<EOF
-                            if [ ! -d "flask-app" ]; then
+                            ssh -o StrictHostKeyChecking=no pablo@dh.pablomartin.site " 
+                            # Verificar si el directorio existe, si no, clonarlo
+                            if [ ! -d 'flask-app' ]; then
                                 git clone https://github.com/PabloMartin19/flask-app.git
                             fi
                             cd flask-app
                             git pull
-                            export NOMBRE="Pablo"
+                            export NOMBRE='Pablo'
                             docker-compose up -d --build
-                            EOF
+                            "
                             '''
                         }
                     }
